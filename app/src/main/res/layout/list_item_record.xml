@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/colorPrimaryDark"
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Sample Name"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tvPolNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Policy Num"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvExpDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Expiry Date"
+            android:clickable="true"
+            android:focusable="false"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Company"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tvPolType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Policy Type"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tvMobNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Number"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample Email"
+            android:textSize="18sp" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+
+

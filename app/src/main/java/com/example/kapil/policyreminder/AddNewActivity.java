@@ -18,6 +18,7 @@ import com.example.kapil.policyreminder.db.RecordTable;
 import com.example.kapil.policyreminder.model.Record;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -25,12 +26,9 @@ public class AddNewActivity extends AppCompatActivity {
     Calendar myCalender = Calendar.getInstance();
     public EditText edName,edPolNum,edExpDate,edComp,edPolType,edMobNum,edEmail;
     Button btnAdd;
-    long ID;
     private int mYear, mMonth, mHour, mMinute,mDay;
     private String mDate;
     public static final String TAG = "RECORD";
-    PendingIntent pendingIntent;
-    AlarmManager alarmManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +43,6 @@ public class AddNewActivity extends AppCompatActivity {
         edEmail = findViewById(R.id.edEmail);
         btnAdd = findViewById(R.id.btnAdd);
 
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        mYear = myCalender.get(Calendar.YEAR);
-        mMonth = myCalender.get(Calendar.MONTH);
-        mDay = myCalender.get(Calendar.DAY_OF_MONTH);
-
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int date) {
@@ -61,7 +53,6 @@ public class AddNewActivity extends AppCompatActivity {
             }
         };
         edExpDate.setOnClickListener(new View.OnClickListener() {
-            //Calendar calendar = Calendar.getInstance();
             @Override
             public void onClick(View view) {
                 new DatePickerDialog(AddNewActivity.this,date,
@@ -74,12 +65,11 @@ public class AddNewActivity extends AppCompatActivity {
 
         RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
         final SQLiteDatabase writeDb = myDbHelper.getWritableDatabase();
-        SQLiteDatabase readDb = myDbHelper.getReadableDatabase();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ID = RecordTable.addRecord(new Record(0,
+                int ID = (int) RecordTable.addRecord(new Record(0,
                                 edName.getText().toString(),
                                 edPolNum.getText().toString(),
                                 edExpDate.getText().toString(),
@@ -88,18 +78,18 @@ public class AddNewActivity extends AppCompatActivity {
                                 edMobNum.getText().toString(),
                                 edEmail.getText().toString()),
                         writeDb);
+                //Log.d(TAG, "onClick: " + ID);
 
-                myCalender.set(Calendar.HOUR_OF_DAY,13);
-                myCalender.set(Calendar.MINUTE,58);
+                myCalender.set(Calendar.HOUR_OF_DAY,18);
+                myCalender.set(Calendar.MINUTE,44);
                 myCalender.set(Calendar.SECOND,0);
-//                myCalender.set(Calendar.YEAR,mYear);
-//                myCalender.set(Calendar.MONTH,mMonth);
-//                myCalender.set(Calendar.DAY_OF_MONTH,mDay);
 
                 Intent intent = new Intent(AddNewActivity.this, AlarmReceiver.class);
-                pendingIntent = PendingIntent.getBroadcast(AddNewActivity.this, 0, intent, 0);
+                intent.putExtra("Name",edName.getText().toString());
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), 10000, pendingIntent);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(AddNewActivity.this, ID, intent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), pendingIntent);
 
                 Intent i = new Intent(AddNewActivity.this,MainActivity.class);
                 startActivity(i);

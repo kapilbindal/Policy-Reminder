@@ -60,6 +60,13 @@
             android:text="Sample Email"
             android:textSize="18sp" />
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SNOOZE"
+        android:id="@+id/btnSnooze"
+        android:layout_gravity="right"
+        android:layout_margin="25dp"/>
 </android.support.v7.widget.CardView>
 
 

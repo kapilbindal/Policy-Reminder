@@ -19,7 +19,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
 
     private ArrayList<Record> records;
 
-    public RecordAdapter(ArrayList<Record> records) {
+        public RecordAdapter(ArrayList<Record> records) {
         this.records = records;
     }
 

@@ -25,8 +25,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="date"
+            android:clickable="true"
+            android:focusable="false"
             android:hint="Expiry Date"
             android:id="@+id/edExpDate"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Time"
+            android:id="@+id/edTime"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

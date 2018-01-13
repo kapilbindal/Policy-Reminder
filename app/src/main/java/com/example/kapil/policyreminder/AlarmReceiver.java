@@ -13,11 +13,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.example.kapil.policyreminder.AddNewActivity.TAG;
+import static java.net.Proxy.Type.HTTP;
 
 /**
  * Created by KAPIL on 12-01-2018.
@@ -29,10 +31,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Notification myNotication;
-        Log.d(TAG, "onReceive: " + intent);
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Toast.makeText(context, "Alarm! Wake up! Wake up!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Policy Reminder!", Toast.LENGTH_LONG).show();
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarmUri == null)
         {
@@ -40,28 +41,40 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
         Ringtone ringtone = RingtoneManager.getRingtone(context, alarmUri);
         ringtone.play();
-
         //Intent intent1 = new Intent("com.rj.notitfications.SECACTIVITY");
         //PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent1, 0);
         //Log.d(TAG, "onReceive: " + pendingIntent);
-
         Notification.Builder builder = new Notification.Builder(context);
-
         String  name = intent.getStringExtra("Name");
-        Log.d(TAG, "onReceive: " + name);
-
+        int ID = intent.getIntExtra("ID",0);
         // builder.setAutoCancel(false);
         builder.setTicker("this is ticker text");
         builder.setContentTitle("Reminder");
-        builder.setContentText(name);
+        builder.setContentText(name + "'s policy is about to expire soon!");
         builder.setSmallIcon(R.drawable.ic_launcher_background);
         //builder.setContentIntent(pendingIntent);
         builder.setNumber(100);
         builder.build();
-        //Log.d(TAG, "onReceive: " + "WORK");
-
         myNotication = builder.getNotification();
-        manager.notify(11, myNotication);
+        manager.notify(ID, myNotication);
 
+        String policyNum = intent.getStringExtra("POLICYNUM");
+        String receiver = intent.getStringExtra("NUMBER");
+        try {
+            SmsManager.getDefault().sendTextMessage(receiver,null,"Your Policy with policy number "+policyNum+" is due for renewal! \n (Ignore if renewed) \n Regards: \n Kapil Gupta",null,null);
+        }catch(Exception e){
+            Log.d(TAG, "onReceive: " + e);
+        }
+//        Intent sendIntent = new Intent(android.content.Intent.ACTION_SENDTO);
+//        sendIntent.setData(Uri.parse("mailto:"));
+//        sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]
+//                {receiver});
+//        sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Policy renewal reminder!");
+//        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT,"Your Policy is due for renewal! \n Ignore if renewed. \n Regards: \n Kapil Gupta\n 9999663750");
+//
+//        //sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
+//        sendIntent.setType("text/html");
+//        context.startActivity(sendIntent);
+//        Log.d(TAG, "onReceive: " + receiver);
     }
 }

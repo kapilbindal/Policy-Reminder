@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -33,7 +34,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Notification myNotication;
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Toast.makeText(context, "Policy Reminder!", Toast.LENGTH_LONG).show();
+
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarmUri == null)
         {
@@ -47,11 +48,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         Notification.Builder builder = new Notification.Builder(context);
         String  name = intent.getStringExtra("Name");
         int ID = intent.getIntExtra("ID",0);
+        Toast.makeText(context, "SMS sent to "+name+" !", Toast.LENGTH_LONG).show();
         // builder.setAutoCancel(false);
         builder.setTicker("this is ticker text");
         builder.setContentTitle("Reminder");
         builder.setContentText(name + "'s policy is about to expire soon!");
-        builder.setSmallIcon(R.drawable.ic_launcher_background);
+        builder.setSmallIcon(R.drawable.reminder_icon);
+        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.drawable.reminder_icon));
         //builder.setContentIntent(pendingIntent);
         builder.setNumber(100);
         builder.build();
@@ -61,7 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String policyNum = intent.getStringExtra("POLICYNUM");
         String receiver = intent.getStringExtra("NUMBER");
         try {
-            SmsManager.getDefault().sendTextMessage(receiver,null,"Your Policy with policy number "+policyNum+" is due for renewal! \n (Ignore if renewed) \n Regards: \n Kapil Gupta",null,null);
+            SmsManager.getDefault().sendTextMessage(receiver,null,"Your Policy with policy number "+policyNum+" is due for renewal!\n(Ignore if renewed)\nRegards:\nKapil Gupta",null,null);
         }catch(Exception e){
             Log.d(TAG, "onReceive: " + e);
         }

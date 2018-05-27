@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp">
     <LinearLayout
         android:orientation="vertical"
         android:padding="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="160dp"
+        android:background="@drawable/card_background">
 
         <TextView
             android:textColor="@color/colorPrimaryDark"
@@ -16,14 +19,28 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
             android:text="Sample Name"
-            android:textSize="18sp" />
-
+            android:textSize="20sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Policy Number: "/>
         <TextView
             android:id="@+id/tvPolNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sample Policy Num"
             android:textSize="15sp" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expiry Date: "/>
 
         <TextView
             android:id="@+id/tvExpDate"
@@ -33,6 +50,14 @@
             android:clickable="true"
             android:focusable="false"
             android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Company: "/>
 
         <TextView
             android:id="@+id/tvCompany"
@@ -40,24 +65,49 @@
             android:layout_height="wrap_content"
             android:text="Sample Company"
             android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Policy Type: "/>
         <TextView
             android:id="@+id/tvPolType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sample Policy Type"
             android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mobile Number: "/>
         <TextView
             android:id="@+id/tvMobNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sample Number"
             android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email: "/>
         <TextView
             android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sample Email"
             android:textSize="15sp" />
+    </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
 

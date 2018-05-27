@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/add_background"
     tools:context="com.example.kapil.policyreminder.AddNewActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="15dp"
+        android:background="@color/cardview_shadow_end_color"
+        >
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
             android:hint="Name"
-            android:id="@+id/edName"/>
+            android:id="@+id/edName"
+            android:fontFamily="sans-serif"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:hint="Policy Number"
-            android:id="@+id/edPolNum"/>
+            android:id="@+id/edPolNum"
+            android:fontFamily="sans-serif"/>
+
         <EditText
+            android:id="@+id/edExpDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="date"
             android:clickable="true"
             android:focusable="false"
             android:hint="Expiry Date"
-            android:id="@+id/edExpDate"/>
+            android:inputType="date" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,33 +49,41 @@
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
             android:hint="Insurance Company"
-            android:id="@+id/edComp"/>
+            android:id="@+id/edComp"
+            android:fontFamily="sans-serif"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
             android:hint="Policy Type"
-            android:id="@+id/edPolType"/>
+            android:id="@+id/edPolType"
+            android:fontFamily="sans-serif"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:maxLength="10"
             android:hint="Mobile Number"
-            android:id="@+id/edMobNum"/>
+            android:id="@+id/edMobNum"
+            android:fontFamily="sans-serif"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:hint="Email Id"
-            android:id="@+id/edEmail"/>
+            android:id="@+id/edEmail"
+            android:fontFamily="sans-serif"/>
         <Button
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="ADD"
+            android:textSize="25sp"
             android:id="@+id/btnAdd"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
+            android:background="@drawable/button_background"
+            />
 
     </LinearLayout>
 
-</FrameLayout>
+</ScrollView>

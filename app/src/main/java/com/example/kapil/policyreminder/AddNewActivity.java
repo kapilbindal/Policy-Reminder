@@ -20,6 +20,11 @@ import com.example.kapil.policyreminder.db.RecordDatabaseHelper;
 import com.example.kapil.policyreminder.db.RecordTable;
 import com.example.kapil.policyreminder.model.Record;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,34 +60,34 @@ public class AddNewActivity extends AppCompatActivity {
                 new TimePickerDialog(AddNewActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        myCalender.set(Calendar.HOUR_OF_DAY,i);
-                        myCalender.set(Calendar.MINUTE,i1);
-                        myCalender.set(Calendar.SECOND,0);
+                        myCalender.set(Calendar.HOUR_OF_DAY, i);
+                        myCalender.set(Calendar.MINUTE, i1);
+                        myCalender.set(Calendar.SECOND, 0);
                         edTime.setText(i + ":" + i1 + ":" + sec);
                     }
-                },hour,minute,false).show();
+                }, hour, minute, false).show();
             }
         });
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int date) {
-                myCalender.set(Calendar.YEAR,year);
-                myCalender.set(Calendar.MONTH,month);
-                myCalender.set(Calendar.DAY_OF_MONTH,date);
+                myCalender.set(Calendar.YEAR, year);
+                myCalender.set(Calendar.MONTH, month);
+                myCalender.set(Calendar.DAY_OF_MONTH, date);
                 updateLabel();
             }
         };
         edExpDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               DatePickerDialog datePickerDialog =  new DatePickerDialog(AddNewActivity.this,date,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewActivity.this, date,
                         myCalender.get(Calendar.YEAR),
                         myCalender.get(Calendar.MONTH),
                         myCalender.get(Calendar.DAY_OF_MONTH)
                 );
-               datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-               datePickerDialog.show();
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                datePickerDialog.show();
             }
         });
         final String name = edName.getText().toString();
@@ -99,9 +104,10 @@ public class AddNewActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!edPolNum.getText().toString().isEmpty()&&!edName.getText().toString().isEmpty()&&!edExpDate.getText().toString().isEmpty()
-                        &&!edComp.getText().toString().isEmpty()&&!edPolType.getText().toString().isEmpty()&&!edMobNum.getText().toString().isEmpty()
-                        &&!edEmail.getText().toString().isEmpty()) {
+
+                if (!edPolNum.getText().toString().isEmpty() && !edName.getText().toString().isEmpty() && !edExpDate.getText().toString().isEmpty()
+                        && !edComp.getText().toString().isEmpty() && !edPolType.getText().toString().isEmpty() && !edMobNum.getText().toString().isEmpty()
+                        && !edEmail.getText().toString().isEmpty()) {
                     int ID = (int) RecordTable.addRecord(new Record(0,
                                     edName.getText().toString(),
                                     edPolNum.getText().toString(),
@@ -111,29 +117,44 @@ public class AddNewActivity extends AppCompatActivity {
                                     edMobNum.getText().toString(),
                                     edEmail.getText().toString()),
                             writeDb);
-                    //Log.d(TAG, "onClick: " + ID);
-    //                myCalender.set(Calendar.HOUR_OF_DAY,18);
-    //                myCalender.set(Calendar.MINUTE,44);
-    //                myCalender.set(Calendar.SECOND,0);
+
+                   /* InputStream is = getResources().openRawResource(R.raw.myfile);
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(is, Charset.forName("UTF-8"))
+                    );
+                    String line = "" ;
+                try {
+                    while ((line = reader.readLine()) != null) {
+                        String[] tokens = line.split(",");
+                        Record record = new Record(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],tokens[5],tokens[6]);
+                        int ID = (int) RecordTable.addRecord(record,writeDb);
+                        Log.d(TAG, "onClick: " + record);
+                    }
+                }catch (IOException e){
+                        e.printStackTrace();
+                    }
+
+*/
                     Intent intent = new Intent(AddNewActivity.this, AlarmReceiver.class);
-                    intent.putExtra("ID",ID);
-                    intent.putExtra("Name",edName.getText().toString());
-                    intent.putExtra("NUMBER",edMobNum.getText().toString());
-                    intent.putExtra("POLICYNUM",edPolNum.getText().toString());
+                    intent.putExtra("ID", ID);
+                    intent.putExtra("Name", edName.getText().toString());
+                    intent.putExtra("NUMBER", edMobNum.getText().toString());
+                    intent.putExtra("POLICYNUM", edPolNum.getText().toString());
 
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(AddNewActivity.this, ID, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), pendingIntent);
 
-                    Intent i = new Intent(AddNewActivity.this,MainActivity.class);
+                    Intent i = new Intent(AddNewActivity.this, MainActivity.class);
                     startActivity(i);
                 }
-                else{
-                    Toast.makeText(AddNewActivity.this, "All Fields are necesssary!", Toast.LENGTH_SHORT).show();
-                }
+//                else{
+//                    Toast.makeText(AddNewActivity.this, "All Fields are necesssary!", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
     }
+
     private void updateLabel(){
         String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);

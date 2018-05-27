@@ -118,23 +118,6 @@ public class AddNewActivity extends AppCompatActivity {
                                     edEmail.getText().toString()),
                             writeDb);
 
-                   /* InputStream is = getResources().openRawResource(R.raw.myfile);
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(is, Charset.forName("UTF-8"))
-                    );
-                    String line = "" ;
-                try {
-                    while ((line = reader.readLine()) != null) {
-                        String[] tokens = line.split(",");
-                        Record record = new Record(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],tokens[5],tokens[6]);
-                        int ID = (int) RecordTable.addRecord(record,writeDb);
-                        Log.d(TAG, "onClick: " + record);
-                    }
-                }catch (IOException e){
-                        e.printStackTrace();
-                    }
-
-*/
                     Intent intent = new Intent(AddNewActivity.this, AlarmReceiver.class);
                     intent.putExtra("ID", ID);
                     intent.putExtra("Name", edName.getText().toString());
@@ -148,9 +131,9 @@ public class AddNewActivity extends AppCompatActivity {
                     Intent i = new Intent(AddNewActivity.this, MainActivity.class);
                     startActivity(i);
                 }
-//                else{
-//                    Toast.makeText(AddNewActivity.this, "All Fields are necesssary!", Toast.LENGTH_SHORT).show();
-//                }
+                else{
+                    Toast.makeText(AddNewActivity.this, "All Fields are necesssary!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

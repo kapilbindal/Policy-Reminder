@@ -1,4 +1,4 @@
-package com.example.kapil.policyreminder.Aapter;
+package com.example.kapil.policyreminder.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -52,19 +52,19 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
             tvName = itemView.findViewById(R.id.tvName);
             tvPolNum = itemView.findViewById(R.id.tvPolNum);
             tvExpDate = itemView.findViewById(R.id.tvExpDate);
-            tvCompany = itemView.findViewById(R.id.tvCompany);
+            //tvCompany = itemView.findViewById(R.id.tvCompany);
             tvPolType = itemView.findViewById(R.id.tvPolType);
-            tvMobNum = itemView.findViewById(R.id.tvMobNum);
-            tvEmail = itemView.findViewById(R.id.tvEmail);
+            //tvMobNum = itemView.findViewById(R.id.tvMobNum);
+            //tvEmail = itemView.findViewById(R.id.tvEmail);
         }
         void bindView(Record record){
             tvName.setText(record.getName());
             tvPolNum.setText(record.getPolicyNum());
             tvExpDate.setText(record.getExpiryDate());
-            tvCompany.setText(record.getCompany());
+            //tvCompany.setText(record.getCompany());
             tvPolType.setText(record.getType());
-            tvMobNum.setText(record.getMobileNum());
-            tvEmail.setText(record.getEmail());
+            //tvMobNum.setText(record.getMobileNum());
+            //tvEmail.setText(record.getEmail());
         }
     }
 }

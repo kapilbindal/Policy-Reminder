@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,9 +23,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.kapil.policyreminder.Aapter.RecordAdapter;
+import com.example.kapil.policyreminder.adapters.RecordAdapter;
 import com.example.kapil.policyreminder.db.RecordDatabaseHelper;
 import com.example.kapil.policyreminder.db.RecordTable;
 import com.example.kapil.policyreminder.model.Record;
@@ -33,9 +34,7 @@ import com.example.kapil.policyreminder.model.Record;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -46,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
     RecordAdapter recordAdapter;
     public static final String TAG = "ht";
     ArrayList<Record> records = null;
+    Button btnSelect;
 
     @Override
     protected void onStart() {
         super.onStart();
-
         RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
         final SQLiteDatabase writeDb = myDbHelper.getWritableDatabase();
         records = RecordTable.getAllRecords(writeDb);
@@ -65,13 +64,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rvRecordsList = findViewById(R.id.rvRecordsList);
+        btnSelect = findViewById(R.id.btnSelectFile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         int perm = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS);
-        if (perm == PackageManager.PERMISSION_GRANTED){
+        int perm2 = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (perm == PackageManager.PERMISSION_GRANTED && perm2 == PackageManager.PERMISSION_GRANTED){
 
-            RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
+            final RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
             final SQLiteDatabase writeDb = myDbHelper.getWritableDatabase();
-            final SQLiteDatabase readDb = myDbHelper.getReadableDatabase();
 
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
                 @Override
@@ -93,27 +95,78 @@ public class MainActivity extends AppCompatActivity {
             });
 
             itemTouchHelper.attachToRecyclerView(rvRecordsList);
+            btnSelect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    /*
+                    File file = new File(Environment.getExternalStorageDirectory(),"myfile.csv");
+                    String line = "" ;
+                    try {
+                        FileInputStream fin = new FileInputStream(file);
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(fin, Charset.forName("UTF-8"))
+                        );
+                        while ((line = reader.readLine()) != null) {
+                            String[] tokens = line.split(",");
+                            Record record = new Record(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],tokens[5],tokens[6]);
+                            int ID = (int) RecordTable.addRecord(record,writeDb);
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+                            String[] splitdate = record.getExpiryDate().split("-");
+                            Log.e(TAG, "onClick: " + splitdate[0] + " " + splitdate[1] +  " " + splitdate[2] );
+                            Calendar myCalender = Calendar.getInstance();
+                            myCalender.set(Calendar.HOUR_OF_DAY, 10);
+                            myCalender.set(Calendar.MINUTE, 30);
+                            myCalender.set(Calendar.SECOND, 0);
+
+                            int demoMonth = Integer.parseInt(splitdate[1]) - 1 ;
+                            int demoDate =  Integer.parseInt(splitdate[0]) - 15;
+                            if(demoDate <=0){
+                                demoDate = demoDate + 30;
+                                demoMonth = demoMonth - 1;
+                                if(demoMonth<0) demoMonth = demoMonth + 12;
+                            }
+                            myCalender.set(Calendar.YEAR, Integer.parseInt(splitdate[2]));
+                            myCalender.set(Calendar.MONTH, demoMonth );
+                            myCalender.set(Calendar.DAY_OF_MONTH, demoDate);
+
+                            Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                            intent.putExtra("ID", ID);
+                            intent.putExtra("Name", record.getName());
+                            intent.putExtra("NUMBER", record.getMobileNum());
+                            intent.putExtra("POLICYNUM", record.getPolicyNum());
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, ID, intent, 0);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), pendingIntent);
+                        }
+                    }catch (IOException e){
+                        Log.e(TAG, "onClick: " + e );
+                        e.printStackTrace();
+                    }
+                    records = RecordTable.getAllRecords(writeDb);
+                    recordAdapter = new RecordAdapter(records);
+                    rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    rvRecordsList.setAdapter(recordAdapter);
+                    recordAdapter.notifyDataSetChanged();*/
+                }
+            });
 
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(MainActivity.this,AddNewActivity.class));
+                   startActivity(new Intent(MainActivity.this,AddNewActivity.class));
                 }
             });
         }
         else{
             ActivityCompat.requestPermissions(MainActivity.this, // request permission to be granted
-                    new String[]{Manifest.permission.SEND_SMS},
+                    new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_EXTERNAL_STORAGE},
                     44);
         }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 44){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 final RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
@@ -148,76 +201,67 @@ public class MainActivity extends AppCompatActivity {
 
                 itemTouchHelper.attachToRecyclerView(rvRecordsList);
 
-                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-                setSupportActionBar(toolbar);
+                btnSelect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        File file = new File(Environment.getExternalStorageDirectory(),"myfile.csv");
+                        String line = "" ;
+                        try {
+                            FileInputStream fin = new FileInputStream(file);
+                            BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(fin, Charset.forName("UTF-8"))
+                            );
+                            while ((line = reader.readLine()) != null) {
+                                String[] tokens = line.split(",");
+                                Record record = new Record(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],tokens[5],tokens[6]);
+                                int ID = (int) RecordTable.addRecord(record,writeDb);
+
+                                String[] splitdate = record.getExpiryDate().split("-");
+                                Log.e(TAG, "onClick: " + splitdate[0] + " " + splitdate[1] +  " " + splitdate[2] );
+                                Calendar myCalender = Calendar.getInstance();
+                                myCalender.set(Calendar.HOUR_OF_DAY, 11);
+                                myCalender.set(Calendar.MINUTE, 55);
+                                myCalender.set(Calendar.SECOND, 0);
+
+                                int demoMonth = Integer.parseInt(splitdate[1]) - 1 ;
+                                int demoDate =  Integer.parseInt(splitdate[0]) - 15;
+                                if(demoDate <=0){
+                                    demoDate = demoDate + 30;
+                                    demoMonth = demoMonth - 1;
+                                    if(demoMonth<0) demoMonth = demoMonth + 12;
+                                }
+                                myCalender.set(Calendar.YEAR, Integer.parseInt(splitdate[2]));
+                                myCalender.set(Calendar.MONTH, demoMonth );
+                                myCalender.set(Calendar.DAY_OF_MONTH, demoDate);
+
+                                Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                                intent.putExtra("ID", ID);
+                                intent.putExtra("Name", record.getName());
+                                intent.putExtra("NUMBER", record.getMobileNum());
+                                intent.putExtra("POLICYNUM", record.getPolicyNum());
+
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, ID, intent, 0);
+                                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                                alarmManager.set(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), pendingIntent);
+                            }
+                        }catch (IOException e){
+                            Log.e(TAG, "onClick: " + e );
+                            e.printStackTrace();
+                        }
+                        records = RecordTable.getAllRecords(writeDb);
+                        recordAdapter = new RecordAdapter(records);
+                        rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        rvRecordsList.setAdapter(recordAdapter);
+                        recordAdapter.notifyDataSetChanged();
+                    }
+                });
 
                 FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //if(records == null){
-                       // File myFile = new File("/Internal Storage/myfile.csv");
-
-                       InputStream is = getResources().openRawResource(R.raw.myfile);
-
-                            String line = "" ;
-                            try {
-                                //FileInputStream fin = new FileInputStream(myFile);
-                                BufferedReader reader = new BufferedReader(
-                                        new InputStreamReader(is, Charset.forName("UTF-8"))
-                                );
-                                while ((line = reader.readLine()) != null) {
-                                    String[] tokens = line.split(",");
-                                    Record record = new Record(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],tokens[5],tokens[6]);
-                                    int ID = (int) RecordTable.addRecord(record,writeDb);
-
-                                    String[] splitdate = record.getExpiryDate().split("-");
-                                    Calendar myCalender = Calendar.getInstance();
-                                    Log.e(TAG, "onClick: " + splitdate[0] + "  " + splitdate[1] + "     " + myCalender.get(Calendar.MONTH) );
-                                    myCalender.set(Calendar.HOUR_OF_DAY, 23);
-                                    myCalender.set(Calendar.MINUTE, 48);
-                                    myCalender.set(Calendar.SECOND, 0);
-
-                                    int demoMonth = Integer.parseInt(splitdate[1]) - 1 ;
-                                    int demoDate =  Integer.parseInt(splitdate[0]) - 15;
-                                    if(demoDate <=0){
-                                        demoDate = demoDate + 30;
-                                        demoMonth = demoMonth - 1;
-                                        if(demoMonth<0) demoMonth = demoMonth + 12;
-                                    }
-                                    Log.e(TAG, "onClick: " + demoDate + " " + demoMonth );
-
-                                    myCalender.set(Calendar.YEAR, Integer.parseInt(splitdate[2]));
-                                    myCalender.set(Calendar.MONTH, demoMonth );
-                                    myCalender.set(Calendar.DAY_OF_MONTH, demoDate);
-
-                                    Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-                                    intent.putExtra("ID", ID);
-                                    intent.putExtra("Name", record.getName());
-                                    intent.putExtra("NUMBER", record.getMobileNum());
-                                    intent.putExtra("POLICYNUM", record.getPolicyNum());
-
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, ID, intent, 0);
-                                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                                    alarmManager.set(AlarmManager.RTC_WAKEUP, myCalender.getTimeInMillis(), pendingIntent);
-                                }
-                            }catch (IOException e){
-                                Log.e(TAG, "onClick: " + e );
-                                e.printStackTrace();
-                            }
-                            records = RecordTable.getAllRecords(writeDb);
-                            recordAdapter = new RecordAdapter(records);
-                            rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                            rvRecordsList.setAdapter(recordAdapter);
-                            recordAdapter.notifyDataSetChanged();
-                            Log.d(TAG, "onCreate: " + "reached here2");
-
+                        startActivity(new Intent(MainActivity.this,AddNewActivity.class));
                         }
-//                        Intent i = new Intent(MainActivity.this, AddNewActivity.class);
-//                        startActivity(i);
-//                        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                                .setAction("Action", null).show();
-                   // }
                 });
             }else{
                 Toast.makeText(this, "Sending SMS require this permission", Toast.LENGTH_SHORT).show();
@@ -226,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.SEND_SMS},
+                                new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},
                                 44
                         );
                     }
@@ -234,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.SEND_SMS},
+                                new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_EXTERNAL_STORAGE},
                                 44
                         );
                     }

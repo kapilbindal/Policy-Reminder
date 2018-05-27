@@ -59,7 +59,10 @@ public class RecordTable {
         db.delete(TABLE_NAME,"ID="+id,null);
         getTableAsString(db,TABLE_NAME);
     }
-
+    public static void deleteAll(SQLiteDatabase db)
+    {
+        db.delete(TABLE_NAME,null,null);
+    }
     public static  String getTableAsString(SQLiteDatabase db, String tableName) {
         Log.d(TAG, "getTableAsString called");
         String tableString = String.format("Table %s:\n", tableName);
@@ -79,8 +82,6 @@ public class RecordTable {
 
         return tableString;
     }
-
-
 
     public static Record getRecord(int id, SQLiteDatabase db){
         id = 1;

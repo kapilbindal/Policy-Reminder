@@ -57,7 +57,7 @@ public class RecordTable {
     }
     public static void deleteRecord(SQLiteDatabase db, int id){
         db.delete(TABLE_NAME,"ID="+id,null);
-        getTableAsString(db,TABLE_NAME);
+        //getTableAsString(db,TABLE_NAME);
     }
     public static void deleteAll(SQLiteDatabase db)
     {
@@ -73,18 +73,17 @@ public class RecordTable {
                 for (String name: columnNames) {
                     tableString += String.format("%s: %s\n", name,
                             allRows.getString(allRows.getColumnIndex(name)));
-                    Log.e(TAG, "getTableAsString: " + tableString );
                 }
                 tableString += "\n";
 
             } while (allRows.moveToNext());
         }
-
+        Log.e(TAG, "getTableAsString: " + tableString );
         return tableString;
     }
 
-    public static Record getRecord(int id, SQLiteDatabase db){
-        id = 1;
+    public static Record getRecord(String policyNum, SQLiteDatabase db){
+        //id = 1;
         Cursor cursor = db.query(TABLE_NAME,new String[]{
                 Columns.ID,
                 Columns.NAME,
@@ -94,7 +93,7 @@ public class RecordTable {
                 Columns.TYPE,
                 Columns.MOBILE_NUM,
                 Columns.EMAIL
-        }, Columns.ID + "=?", new String[]{String.valueOf(id)},null,null,null,null);
+        }, Columns.POLIC_NUM + "=?", new String[]{policyNum},null,null,null,null);
 
         if(cursor!= null && cursor.moveToFirst()) {
 

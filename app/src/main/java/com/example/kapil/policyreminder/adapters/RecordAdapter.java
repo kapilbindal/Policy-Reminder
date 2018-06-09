@@ -1,11 +1,15 @@
 package com.example.kapil.policyreminder.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.kapil.policyreminder.AddNewActivity;
 import com.example.kapil.policyreminder.R;
 import com.example.kapil.policyreminder.model.Record;
 
@@ -18,9 +22,11 @@ import java.util.ArrayList;
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordViewHolder>{
 
     private ArrayList<Record> records;
+    Context context;
 
-        public RecordAdapter(ArrayList<Record> records) {
+    public RecordAdapter(ArrayList<Record> records, Context context) {
         this.records = records;
+        this.context = context;
     }
 
     public void setRecords(ArrayList<Record> records) {
@@ -35,8 +41,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     @Override
-    public void onBindViewHolder(RecordViewHolder holder, int position) {
+    public void onBindViewHolder(RecordViewHolder holder, final int position) {
         holder.bindView(records.get(position));
+
+        holder.tvPolNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, AddNewActivity.class));
+            }
+        });
+
     }
 
     @Override

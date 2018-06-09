@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
         final SQLiteDatabase writeDb = myDbHelper.getWritableDatabase();
         records = RecordTable.getAllRecords(writeDb);
-        recordAdapter = new RecordAdapter(records);
+        RecordTable.getTableAsString(writeDb,"Records");
+        recordAdapter = new RecordAdapter(records,MainActivity.this);
         rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         rvRecordsList.setAdapter(recordAdapter);
         recordAdapter.notifyDataSetChanged();
@@ -68,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        int perm = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS);
+        //int perm = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS);
         int perm2 = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (perm == PackageManager.PERMISSION_GRANTED && perm2 == PackageManager.PERMISSION_GRANTED){
+        if (perm2 == PackageManager.PERMISSION_GRANTED){
 
             final RecordDatabaseHelper myDbHelper = new RecordDatabaseHelper(this);
             final SQLiteDatabase writeDb = myDbHelper.getWritableDatabase();
@@ -82,12 +84,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                    int position = viewHolder.getAdapterPosition() + 1;
-                    Log.e(TAG, "onSwiped: " + position );
-                    int demoId = RecordTable.getRecord(position,writeDb).getId();
-                    Log.e(TAG, "onSwiped: " + demoId );
+                    int position = viewHolder.getAdapterPosition();
+                    int demoId = RecordTable.getRecord(records.get(position).getPolicyNum(),writeDb).getId();
                     RecordTable.deleteRecord(writeDb, demoId);
-                    Log.e(TAG, "onSwiped: " + records.size() );
                     records.remove(viewHolder.getAdapterPosition());
                     records.trimToSize();
                     recordAdapter.notifyDataSetChanged();
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
             btnSelect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    /*
                     File file = new File(Environment.getExternalStorageDirectory(),"myfile.csv");
                     String line = "" ;
                     try {
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                             int ID = (int) RecordTable.addRecord(record,writeDb);
 
                             String[] splitdate = record.getExpiryDate().split("-");
-                            Log.e(TAG, "onClick: " + splitdate[0] + " " + splitdate[1] +  " " + splitdate[2] );
+                            //Log.e(TAG, "onClick: " + splitdate[0] + " " + splitdate[1] +  " " + splitdate[2] );
                             Calendar myCalender = Calendar.getInstance();
                             myCalender.set(Calendar.HOUR_OF_DAY, 10);
                             myCalender.set(Calendar.MINUTE, 30);
@@ -144,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     records = RecordTable.getAllRecords(writeDb);
-                    recordAdapter = new RecordAdapter(records);
+                    recordAdapter = new RecordAdapter(records,MainActivity.this);
                     rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                     rvRecordsList.setAdapter(recordAdapter);
-                    recordAdapter.notifyDataSetChanged();*/
+                    recordAdapter.notifyDataSetChanged();
                 }
             });
 
@@ -175,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                 records = RecordTable.getAllRecords(readDb);
                 rvRecordsList = findViewById(R.id.rvRecordsList);
-                recordAdapter = new RecordAdapter(records);
+                recordAdapter = new RecordAdapter(records,MainActivity.this);
                 rvRecordsList.setLayoutManager(new LinearLayoutManager(this));
                 rvRecordsList.setAdapter(recordAdapter);
 
@@ -187,18 +185,14 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                        int position = viewHolder.getAdapterPosition() + 1;
-                        int demoId = RecordTable.getRecord(position,writeDb).getId();
-                        //Log.e(TAG, "onSwiped: " + demoPolicyNum );
-                        RecordTable.deleteRecord(writeDb,demoId);
-                        //Log.e(TAG, "onSwiped: " + writeDb.toString() );
+                        int position = viewHolder.getAdapterPosition();
+                        int demoId = RecordTable.getRecord(records.get(position).getPolicyNum(),writeDb).getId();
+                        RecordTable.deleteRecord(writeDb, demoId);
                         records.remove(viewHolder.getAdapterPosition());
                         records.trimToSize();
-                        //Log.d(TAG, "onSwiped: " + position);
                         recordAdapter.notifyDataSetChanged();
                     }
                 });
-
                 itemTouchHelper.attachToRecyclerView(rvRecordsList);
 
                 btnSelect.setOnClickListener(new View.OnClickListener() {
@@ -249,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         records = RecordTable.getAllRecords(writeDb);
-                        recordAdapter = new RecordAdapter(records);
+                        recordAdapter = new RecordAdapter(records,MainActivity.this);
                         rvRecordsList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                         rvRecordsList.setAdapter(recordAdapter);
                         recordAdapter.notifyDataSetChanged();
